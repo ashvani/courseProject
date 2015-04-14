@@ -1,0 +1,9 @@
+---
+output: pdf_document
+---
+#Introduction  
+Regression analysis is used to predict value of response variable for given value of covariates. In real life problems response variable is random variable for fixed value of covariates. For this reason, we give measure of central tendency as predicted value of response variable for given value of covariates. For example, linear regression predicts mean of response variable whereas quantile regression predicts quantile of response variable(for $\frac{1}{2}^{th}$ quantile, quantile regression predicts median of response variable).   
+    
+Quantile regression is introduced by Koenker and Bassett(1978). Quantile regression models **conditional quantile** as a function of covariates in the same way as linear regression models **conditinal mean** as a function of covariates. So quantile regression seems an extension of linear regression in which we can model any predetermined position of distribution by choosing appropriate quantile. For example, using quantile regression one can answer the question that how **mother's age** is affecting **infant birth weight**(weight at the time of birth) or how **educational qualification** of mother is influencing the **infant birth weight**.  
+  
+This report is divided into three chapters. Chapter first covers motivation behind quantile regression by means of an example followed by definition of quantile function and quantile function as a solution to an optimization problem. Chapter second includes quantile regression, issue of quantile treatment effect, introduction to equivariance and censoring. Chapter second ends with applying the concepts from chapter first and chapter second to some real life data sets. Chapter third has R codes used in this report to produce graph and to analyse the two data sets(**Engel data set**, **Household data set**). 

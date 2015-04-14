@@ -1,0 +1,7 @@
+---
+output: pdf_document
+---
+#Plan for 2nd Stage  
+Plans for 2nd stage expected to start from first week of January 2015 are as follow:  
+1. Studying various aspects of quantile regression models for censored data.  
+2. Studying applications of these models to real life and simulated data sets.

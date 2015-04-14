@@ -1,0 +1,356 @@
+---
+output: pdf_document
+---
+# Chapter 2 : Quantile Regression  
+##2.1 Quantile Regression
+Knowing that the sample mean solves the problem
+$$
+ \begin{aligned}
+ & \underset{\mu \in \mathbb{R}}{\text{min}}
+ &  \sum_{i=1}^{n} (y_i - \mu)^2 \\
+ \end{aligned}
+$$  
+suggests that if we are willing to express the *conditional mean* of y given x as $\mu(x)$ = $\underline{x}^{'} \underline{\beta}$, then $\underline{\beta}$ may be estimated by solving   
+$$
+ \begin{aligned}
+ & \underset{\beta \in \mathbb{R}}{\text{min}}
+ &  \sum_{i=1}^{n} (y_i - \underline{x}^{'} \underline{\beta})^2 \\
+ \end{aligned}
+$$  
+similarly since the $\tau^{th}$ sample quantile $\hat{\alpha}$ solves  
+$$
+ \begin{aligned}
+ & \underset{\alpha \in \mathbb{R}}{\text{min}}
+ &  \sum_{i=1}^{n} \rho_{\tau}(y_i - \alpha) \\
+ \end{aligned}
+ $$
+We are led to specify the $\tau^{th}$ **conditional quantile** function as $Q_{y}(\tau|\underline{x})$ = $\underline{x}^{'} \underline{\beta}(\tau)$, and to consideration of $\underline{\beta}(\tau)$ solving  
+$$
+ \begin{aligned}
+ & \underset{\mu \in \mathbb{R}}{\text{min}}
+ &  \sum_{i=1}^{n} \rho_{\tau}(y_i - \underline{x_i}^{'} \underline{\beta}) \\
+ \end{aligned}
+$$  
+This is the germ of idea elaborated by Koenker and Bassett.   
+Consider an artificial sample in which we have a sample bivariate regression model with independent (i.i.d.) errors.  
+$$
+ \begin{aligned}
+y_{i} = \beta_0 + \beta_1 x_i + u_i
+ \end{aligned}
+$$
+and so the conditional quantile functions of y are  
+$$
+ \begin{aligned}
+Q_{y}(\tau | x) = \beta_0 + \beta_1 x + F_{u}^{-1}(\tau)
+ \end{aligned}
+$$
+where $F_{u}$ denotes the common distribution function of the errors. $\hat{\underline{\beta}}(\tau)$ estimates the population parameters ($\beta_0 + F_{u}^{-1}(u), \beta_1$).  
+Quantile regression model in **heteroscadastic** form is written as   
+$y_{i} = \beta_0 + \beta_1 x_i + \sigma (x_i) \mu_{i}$  
+where $\sigma(x) = \gamma x^2$ and the {$u_i$} are again i.i.d.. The conditional quantile funtion of y are now   
+$Q_{y}(\tau | x) = \beta_0 + \beta_1 x + \sigma(x) F^{-1}(\tau)$ and can be consistently estimated by minimizing   
+$\sum \rho_{\tau}(y_i - \beta_0 - x_i \beta_1 - x_{i}^{2} \beta_2)$.  
+
+##2.2 Quantile Treatment effect   
+Lehmann(1974) proposed the following model of treatment response.  
+   
+>Suppose the treatment adds the amount $\bigtriangleup(x)$ when the response of the untreated subject would be x. Then the distribution of G of the treatment response is that of the random variable X + $\bigtriangleup(X)$ where X is distribution according to F.   
+
+Special cases obviously include the location shift model, $\bigtriangleup(X)$ = $\bigtriangleup_{0}$, and the scale shift model $\bigtriangleup(x) = \bigtriangleup_{0}X$. If the treatment is beneficial in the sense that   
+$\bigtriangleup(X) \ge 0 \forall$ x, then the distribution of **treatment responses**, is stochastically larger than the distribution of **control responses**. Let Y = X + $\bigtriangleup$ X , and if Y has CDF G and X has CDF F then  
+Y is stochastically larger than X i.e. 
+$$
+ \begin{aligned}
+Y \ge_{s.t.} X \quad \text{if} \quad P(Y > x) \ge P(X > x) \quad \forall x. \\
+\text{This implies that} \quad P(Y \le x) \le P(X \le x) \quad \forall x. \\   
+\text{or} \quad G(x) \le F(x) \quad \forall x. 
+ \end{aligned}
+$$ Hence graph will be as follows.  
+
+
+```{r, echo=FALSE}
+ # grpah for cdf of two stochastic random variable
+ curve(1-exp(-x/2), from = 0, to = 10, col = "blue", ylab = "CDF")
+curve(1-exp(-x/5), from = 0, to = 10, col = "red", add = T)
+ segments(2, 0 , 2, (1 - exp(-1)))
+segments(5, 0, 5, (1 - exp(-1)))
+```
+Here in this graph **blue** and **red** curves are CDF of exponential distribution with parameters 2 and 5 respectively. Distance between two parallel black lines is $\bigtriangleup(x)$ in this case.   
+Doksum (1974) showed that if we define $\bigtriangleup$(x) as the **horizontal distance** between F and G at x so that $F(x) = G(x + \bigtriangleup x)$, then $\bigtriangleup(x)$ is uniquely defined and can be expressed as    
+$$
+ \begin{aligned}
+ \bigtriangleup(x) = G^{-1}(F(x)) - x
+ \end{aligned}
+$$
+Thus on changing variables $\tau$ = F(x), we have the **quantile treatment** effect.  
+$$
+ \begin{aligned}
+ \delta(\tau) &= \bigtriangleup(F^{-1}(\tau)) \\
+ &= G^{-1}(\tau) - F^{-1}(\tau)
+ \end{aligned}
+$$  
+We can recover the mean treatment effect by simply integrating the quantile treatment effect over $\tau$ that is;  
+
+$$
+ \begin{aligned}
+ \overline{\delta} &= \int_{0}^{1} \delta(\tau) d\tau \\
+ &= \int_{0}^{1} G^{-1}(\tau)  d\tau - \int_{0}^{1} F^{-1}(\tau) d \tau \\
+ &= \mu(G) - \mu(F)
+ \end{aligned}
+$$   
+
+where $\mu(F)$ is the mean of the distribution F.  
+$$
+ \begin{aligned}
+ \text{Let} \quad G^{-1}(\tau) &= t\\
+ \text{This implies that } G(t) &= \tau \\
+ d\tau = g(t)dt\\
+ \therefore \int_{0}^{1} G^{-1} (\tau) d\tau &= \int_{-\infty}^{+\infty} tg(t) dt \
+ \
+ &= \mu(G)
+ \end{aligned}
+$$  
+In the two sample setting the quantile treatment effect is naturally estimable by
+$$
+ \begin{aligned}
+ \hat{\delta}(\tau) &= \hat{G}_n^{-1}(\tau) - \hat{F}_m^{-1}(\tau)
+ \end{aligned}
+$$
+where $\hat{G}_n$ and $\hat{F}_m$ denote the empirical distribution functions of the treatment effect and control observations, based on n and m observations respectively.   
+
+##2.3 How does Quantile Regression work?  
+Much of intution about how ordinary regression works comes from the geometry of least square projection. The idea of minimizing the euclidean distance $||y - \hat{y}||$ over all $\hat{y}$ in the linear span of column of X is very appealing. In linear regression case we minimize $||y - \hat{y}||^{2} = (\underline{y} - X\underline{\beta})^{'}(\underline{y} - X\underline{\beta})$. To minimize $||y - \hat{y}||^{2}$, we differentiate this function w.r.t. $\beta$ to obtain the normal equations:
+$$
+ \begin{aligned}
+ \bigtriangledown_{\underline{\beta}} ||y - \hat{y}(\beta)||^{2} &= X^{'}(\underline{y} - X^{'}\underline{\beta}) &= 0
+ \end{aligned}
+$$ 
+and solve for $\underline{\beta}$. These normal equations yield a unique solution provided that the design matrix X has full column rank. Hence in linear regression case objective function minimizes at 
+$$
+ \begin{aligned}
+ \underline{\hat{\beta}} &= (X^{'}X)^{-1}X^{'}\underline{y}.
+ \end{aligned}
+$$
+Let minimization criterion(a loss function) for the quantile regression be given by
+$$
+ \begin{aligned}
+ d_{\tau}(y, \hat{y}) &= \sum_{i = 1}^{n} \rho_{\tau}(y_i - \hat{y})
+ \end{aligned}
+$$
+In this case we do not obtain closed form solution such as (in linear regression case). In quantile regression we proceed similarly, but we need to excercise some caution about the differentiation step. The objective is to determine $\underline{\beta}$ which minimizes  
+ $$
+ \begin{aligned}
+ R(\underline{\beta}) &= d_{\tau}(y, \hat{y}(\underline{\beta})) \\
+ &= \sum_{i = 1}^{n} \rho_{\tau}(y_i - \underline{x_i}^{'}\underline{\beta}).
+ \end{aligned}
+$$ 
+Note that $R(\underline{\beta})$ is piecewise linear and continuous, it is differentiable everywhere except at the points at which one or more residuals $y_i - \underline{x_i}^{'}\underline{\beta}$ are zero.    
+The directional derivative of R in the direction of \underline{w} is given by  
+$$
+ \begin{aligned}
+\bigtriangledown R(\underline{\beta}, \underline{w}) &= \frac{d}{dt}[R(\underline{\beta} + t\underline{w})] |_{t = 0} \\
+ &= \frac{d}{dt} \sum_{i = 1}^{n} (y_i - \underline{x_i}^{'}\underline{\beta} - \underline{x_i}^{'}t\underline{w})[\tau - (I(y_i - \underline{x_i}^{'}\underline{\beta} - \underline{x_i}^{'}t\underline{w} ) < 0)] |_{t = 0}
+ \end{aligned}
+$$
+where second line follows using definition of $\rho_{\tau}$. If $y_i < \underline{x_i}^{'}\underline{\beta} - \underline{x_i}^{'}t\underline{w}$ at t = 0  
+
+
+$$
+ \begin{aligned}
+ \bigtriangledown R(\underline{\beta}, \underline{w}) &= \frac{d}{dt} \sum_{i = 1}^{n} (y_i - \underline{x_i}^{'}\underline{\beta} - \underline{x_i}^{'}t\underline{w}) (\tau - 1) |_{t = 0} \\
+ &= -(\tau - 1)\sum_{i = 1}^{n} \underline{x_i}^{'}\underline{w}
+ \end{aligned}
+$$
+for $y_i < \underline{x_i}^{'} \underline{\beta}$  
+If $y_i > \underline{x_i}^{'}\underline{\beta} - \underline{x_i}^{'}t\underline{w}$ at t = 0   
+
+$$
+ \begin{aligned}
+ \bigtriangledown R(\underline{\beta}, \underline{w}) &= \frac{d}{dt} \sum_{i = 1}^{n} (y_i - \underline{x_i}^{'}\underline{\beta} - \underline{x_i}^{'}t\underline{w}) (\tau - 1) |_{t = 0} \\
+ &= -\tau \sum_{i = 1}^{n} \underline{x_i}^{'}\underline{w}
+ \end{aligned}
+$$
+for $y_i > \underline{x_i}^{'} \underline{\beta}$ 
+The above two situations can be combined as  
+
+$$
+ \begin{aligned}
+ \bigtriangledown R(\underline{\beta}, \underline{w}) &= - \sum \psi_{\tau}^{*} (y_i - \underline{x_i}^{'}\underline{\beta}, \underline{x_i}^{'}\underline{w})\underline{x_i}^{'}\underline{w}
+ \end{aligned}
+$$
+where 
+$$
+\psi_{\tau}^{*}(u, v) = \left\{
+        \begin{array}{ll}
+            \tau - I(u < 0) &, if \quad u \neq 0 \\
+            \tau - I(v < 0) &, if \quad u = 0
+        \end{array}
+    \right.
+$$ 
+If at a point $\underline{\hat{\beta}}$, the directional derivatives are all non negative (i.e. $\bigtriangledown R(\underline{\beta}, \underline{w})  \ge  0 \quad \forall \underline{w} \in \mathbb{R}^{p}$ with ||w|| = 1 ) then $\underline{\hat{\beta}}$ minimizes R($\underline{\beta}$). This is a natural generalization of simply setting $\bigtriangledown R(\underline{\beta})$ = 0 when R is smooth. It simply requires that the funtion be increasing as we move away from the point $\hat{\underline{\beta}}$ regardless of the direction in which we decide to move.  
+
+##2.4 Equivariance  
+  
+In some situations it is preferable to adjust the scale of original variables or reparametrize a model so that it's result has a more natural interpretation. Such changes should not affect our qualitative and quantitative conclusions based on the regression output. In this context invariance to a set of some elementary transformation is called **equivariance**.  
+Let $\tau^{th}$ regression quantile based on observations (y, X) be $\hat{\beta}(\tau; y, X)$ . Four basic equivariance properties of $\hat{\beta}(\tau; y, X)$ are collected in the following result.   
+**Theorem1**: **(Koenker and Bassett, 1978)** Let A be any p$\times$p non-singular matrix, $\gamma \in \mathbb{R}^{p}$ and a > 0. Then, for any $\tau \in$ [0, 1]   
+
+$$
+ \begin{aligned}
+ \text{(i)} \hat{\beta}(\tau; ay, X) &= a\hat{\beta}(\tau; y, X) \\
+ \text{(ii)} \hat{\beta}(\tau; -ay, X) &= -a\hat{\beta}(1 - \tau; y, X) \\
+ \text{(iii)} \hat{\beta}(\tau; y + X\gamma, X) &= \hat{\beta}(\tau; y, X) + \gamma \\
+ \text{(iv)} \hat{\beta}(\tau; y, XA) &= A^{-1}\hat{\beta}(\tau; y, X)
+ \end{aligned}
+$$ 
+
+**Remark2.1**: Properties (i) and (ii) implie a form of **scale** equivariance, property(iii) is usually called **shift** or **regression** equivariance, and property (iv) is called equivariance to **reparametrization of design**.  
+There is one more equivariance property which is enjoyed by quantile functions. This equivariance property is more stronger than the above four as it is related with special funtion h(.) and this property is referred to as **equivariance to monotone transformations**. Let h(.) be a nondecreasing function on $\mathbb{R}$. Then for any random variable Y,  
+$$
+ \begin{aligned}
+ Q_{h(Y)}(\tau) &= h(Q(\tau))
+ \end{aligned}
+$$
+i.e. the quantiles of the transformed random variable h(Y) are simply the transformed quantiles of the original Y.  
+
+##2.5 Censoring  
+
+Censoring is a condition in which the value of a measurement or observation is only partially known. In applications responses $y_{i}$'s  are subject to censoring. For example in a medical study suppose a patient withdraws his name from the study as he is transferred to new a location for his job and he is unable to take part in study.   
+Suppose $y^{*}_i$ are values when censoring is not present and it is derived from linear model
+$$
+ \begin{aligned}
+ y_{i}^{*} &= \underline{x}^{'}_{i} \beta + u_i, i=1, 2, ......, n
+ \end{aligned}
+$$
+where {$u_{i}$} are i.i.d. from distribution F(density f). But if censoring is present then $y_i^{*}$'s are unobservable(latent) and we observe 
+$$
+ \begin{aligned}
+  y_i &= max\{0, y_{i}^{*}\}
+ \end{aligned}
+$$
+Powell(1986) observed that the equivariance of the quantiles to monotone transformations implies that in this model the conditional quantile funtions of the response depend on the censoring point, but are independent of F. Formally, we may express the $\tau^{th}$ conditional quantile function of the observed response $y_i$ in above model as(Koenker)
+$$
+ \begin{aligned}
+ Q_{y_i}(\tau | x) &= max\{0, \underline{x_i}^{'} \underline{\beta} + F_u^{-1}(\tau)\};
+ \end{aligned}
+$$
+The parameters of the conditional quantile functions may now be estimated by replacing 
+$$
+ \begin{aligned}
+ & \underset{\underline{b}}{\text{min}}
+ &  \sum_{i=1}^{n} \rho_{\tau}(y_i - \underline{x}^{'}_{i} \underline{b}) \\
+ \end{aligned}
+$$ 
+by
+$$
+ \begin{aligned}
+ & \underset{\underline{b}}{\text{min}}
+ &  \sum_{i=1}^{n} \rho_{\tau}(y_i - max\{0, \underline{x}^{'} \underline{b})\} \\
+ \end{aligned}
+$$ 
+  where we assume, as usual, that the design vectors $\underline{x_{i}}$'s contain an intercept to absorb the additive effect of $F_{u}^{-1}(\tau)$.   
+  
+##2.6 Examples of Quantile Regression
+###2.6.1 Engel Data    
+
+ This data(**Engel data(Koenker and Hallock, 2001)**) have 2 variables namely food expenditure(dependent) and income(independent) and 235 observations one observation per household. First few rows of data are (here a line starting with double **#** symbol means that it is output of some R code):
+ 
+```{r, echo = FALSE}
+library(quantreg)
+data(engel)
+# some rows of dataset
+head(engel)
+attach(engel)# to make variable accessible by it's name
+# number of rows and columns
+dimension <- dim(engel)
+# to make a scatterplot and quantile regressor line
+plot(income,foodexp,cex=.25,type="n",xlab="Household Income",
+    ylab="Food Expenditure")
+points(income,foodexp,cex=.5,col="blue")
+abline(rq(foodexp~income,tau=.5),col="blue")
+abline(lm(foodexp~income),lty=2,col="red") #the dreaded ols line
+taus <- c(.05,.1,.25,.75,.90,.95)
+f <- rq(foodexp ~ income, tau = taus)
+for( i in 1:length(taus)){
+    abline(coef(f)[,i],col="gray")
+}
+```
+This figure plots **Engel** data to study the dependence of income. Seven estimated quantile regression lines for different values of $\tau$(0.05, 0.1, 0.25, 0.5, 0.75, 0.90, 0.95) are superimposed on the scatterplot. The median $\tau$ = 0.5 is indicated by the **blue line** and the least square estimate of the conditional mean function is indicated by **red dashed line**.   
+This plot compares the best fit lines for 6 quantiles regression models to the least square fit. Plot shows that   
+**1**. Food expenditure increases with income.   
+**2**. The dispersion of food expenditure increases with income.  
+**3**. The least squares estimate fit low income observations quite poorly(i.e. the OLS line passes over most low income households).   
+**4**. The spacing of the quantile regression lines also reveals that the conditional distribution of food expenditure is skewed to the left; the narrower spacing to the upper quantiles indicating high density and a short upper tail and the wider spacing of the lower quantiles indicating a lower density and longer tail.    
+
+###2.6.2 Health Data   
+
+Data have 2955 rows and 8 columns i.e. 2955 observation and 8 variables. In data file variable names are coded as  
+**totalexp** - total medical expenditure in $.   
+**suppins** - Indicator that person has suppliement private insurance.   
+**totchr** - total number of chronic conditions(problems).  
+**age** - age in years.   
+**female** - Indicator of gender as female.  
+**white** - Indicator of race as white.   
+In design matrix X above variables have name **Xsuppins**, **Xtotchr** and so on.
+Two variables **ltotexp** and **dupersid** are not part of our study.  
+Here one is interested in studying how total medical expenditure is affected by variables suppins, totchr, age, female, and white. Hence dependent variable is totalexp and remaining of these are independent variables. First few rows of data look like this : 
+```{r, echo=FALSE}
+
+# reading data from csv file named as "quanitle_health.csv"
+mydata<- read.csv("quantile_health.csv")
+attach(mydata) # to address data component without referring to data variable
+head(mydata) # few data rows 
+```
+
+```{r, echo=FALSE}
+Y <- cbind(totexp) # dependent variable
+X <- cbind(suppins, totchr, age, female, white) # design matrix
+# plotting percentiles of dependent variable
+plot(x = seq(0, 1, by = .005),quantile(Y, seq(0, 1, by = .005)), type = "l", 
+     col = "red", lwd = "2", xlab = "percentiles", ylab = "total medical expenditure")
+
+```
+This graph shows total expenditure is increasing rapidly for high percentiles. Our aim is to study the factors influencing total medical expenditures for people with low, medium and high expenditures. There is large difference in high percentiles as compared with low percentiles.   
+Outcome of R code for OLS and quantile regression for $\tau$ = .25, .5, .75
+```{r,fig.height=8, warning=FALSE, echo=FALSE}
+# OLS regression
+olsreg <- lm(Y ~ X, data=mydata)
+summary(olsreg)
+# Quantile regression
+quantreg25 <- rq(Y ~ X, data=mydata, tau=0.25)
+summary(quantreg25)
+quantreg50 <- rq(Y ~ X, data=mydata, tau=0.5)
+summary(quantreg50)
+quantreg75 <- rq(Y ~ X, data=mydata, tau=0.75)
+summary(quantreg75)
+#quantreg90 <- rq(Y ~ X, data=mydata, tau=0.9)
+# summary(quantreg90)
+```
+Result of the R code shows that independent variable **Xfemale** is not significant for $\tau$ = .25, .5, .75 at 5% level of significance and for very high expenditure group **intercept term**, **Xsuppins** and **Xwhite** are also not significant. 
+
+```{r, echo=FALSE, warning=FALSE}
+# table of different estimated quantile coefficients and ols
+x <- cbind(olsreg$coefficients, quantreg25$coefficients, quantreg50$coefficients,
+           quantreg75$coefficients)
+colnames(x) <- c("OLS", "25% quantreg", "50% quantreg", "75% quantreg")
+round(x, 2)
+# Simultaneous quantile regression
+quantreg2575 <- rq(Y ~ X, data=mydata, tau=c(0.25, 0.75))
+#summary(quantreg2575)
+
+# ANOVA test for coefficient differences
+anova(quantreg25, quantreg75)
+```
+Table shows that coefficients of **Xtotchr** is 782.47 for 25% percentile this means that the person who has one more chronicle problem will spend $782.47 more if he is low expenditure group(here 25% quantile) and $2855.32 more for high expenditure person(here 75% quantile).
+
+
+```{r, echo=FALSE, warning=FALSE, fig.width=7, fig.height = 8}
+# Plotting data
+quantreg.all <- rq(Y ~ X, tau = seq(0.05, 0.95, by = 0.05), data=mydata)
+quantreg.plot <- summary(quantreg.all)
+plot(quantreg.plot)
+
+
+```     
+In this graph x-axis is for $\tau$ and y-axis represents coefficients of **independent variable**. **Red lines** are used for OLS estimates and **black lines** are used for quantile regression. Two **dotted lines** above and below solid red lines represent uper and lower confidence bounds. Shaded region in the graph represents confidence interval for quantile regression estimate of coefficients.  
+These graphs show that coefficients of quantile regression for particular independent variable is inside confidence interval of OLS estimate of respeective independent variable(approximately) except to variable Xtotchr. The graphs also show that OLS estimate of coefficients of variable Xtotchr is approximately equal to 75% quantile regression estimate of the same variable. Confidence interval for estimate of coefficients of Xtotchr variable does not contain zero for any quantile or OLS regression i.e. Xtotchr variable is significant.

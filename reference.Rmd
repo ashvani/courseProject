@@ -1,0 +1,7 @@
+#REFERENCES  
+   
+1. Dalgaard, P.(2002): **Introductory Statistics with R**, Springer.
+2. Koenker, R., K. F. Hallock(2001): **Quantile Regression**, Journal of Economic Perspective 15 143-156.
+3. Koenker, R.(2005): **Quantile Regression**, Cambridge University Press.
+4. Powell, J. L.(1984): **Least Absolute Deviation Estimation for the Censored Regression Model**, Journal of Econometrics 25 303-325.
+5. Powell, J. L.(1986): **Censored Regression Quantiles**, Journal of Economics 32 143-155.

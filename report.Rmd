@@ -1,0 +1,39 @@
+---
+output: pdf_document
+---
+---  
+title: Quantile Regression in Presence of Censored Observations
+output: 
+  pdf_document:
+    toc: yes 
+    toc_depth: 3
+---
+\fontsize{12}{22}
+\selectfont
+$\pagebreak$  
+$\pagebreak$
+```{r, echo = FALSE}
+setwd("~/Documents/courseProject")
+```
+
+```{r child = 'introduction.Rmd'}
+```
+$\pagebreak$
+```{r child = 'chapter1.Rmd'}
+```
+$\pagebreak$
+```{r child = 'chapter2.Rmd'}
+```
+$\pagebreak$
+```{r child = 'chapter3.Rmd'}
+```
+$\pagebreak$
+```{r child = 'chapter4.Rmd'}
+```
+$\pagebreak$
+```{r child = '2ndPhasePlanning.Rmd'}
+```
+$\pagebreak$
+```{r child = 'reference.Rmd'}
+```
+$\pagebreak$  
